@@ -7,7 +7,7 @@ var productSchema = mongoose.Schema({
         type: Number
     },
     img: {
-        type: String
+        type:Array
     },
     brand: {
         type: String
@@ -17,6 +17,9 @@ var productSchema = mongoose.Schema({
     },
     categories: {
         type: String
+    },
+    imgavata:{
+        type:String
     },
     described: {
         type: String

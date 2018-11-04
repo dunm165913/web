@@ -102,7 +102,7 @@ background-color: red;
     }
 .g{
     height: 300px;
-    overflow: hidden;
+    overflow: auto;
 }
 .buy{
     background: rgb(236, 2, 2);
@@ -383,7 +383,7 @@ background-color: red;
             </div>
             <div class="col-xs-6" style="margin-top:20px">
 
-                <img src=<%- product.img %> class="q" alt="">
+                <img src=<%- product.imgavata %> class="q" alt="">
             </div>
 
             <div class="col-xs-6" style="margin-top:35px">
@@ -448,6 +448,30 @@ background-color: red;
 
 
         </div>
+        <div class="container">
+            <h3 style="margin: 50px 0px 60px 0px">Anh san pham</h3>
+        </div>
+        <div class="container">
+            <% for(let i=0;i<product.img.length;i++){ %>
+
+            <% if( i==0){ %>
+            <div class="col-xs-4">
+                <img src=<%-product.imgavata%> height="200px" alt="">
+
+            </div>
+            <%  }
+                else{ %>
+            <div class="col-xs-4">
+                <img src=<%-product.img[i]%> height="200px" alt="">
+
+            </div>
+            <%   }%>
+
+            <% } %>
+
+        </div>
+
+        <br><br>
         <div style="margin-top:20px" class="container ">
             <div id="described" class="col-xs-8 ">
                 <h2>Thong tin chi tiet.</h2>
@@ -491,7 +515,7 @@ background-color: red;
                 overflow: auto;
                 margin: 15px 10px 5px 10px; 
                 border: 1px solid rgb(236, 228, 228);
-                height: 400px;
+                height: 300px;
             
                 border-radius: 5px;
                color: #222421;
@@ -503,31 +527,47 @@ background-color: red;
                 margin: 40px 40px 20px 40px;
             }
         </style>
+        <br><br>
         <div class="container  rate" style="height: 500px">
             <h3>Danh gia tu nguoi mua</h3>
-            <div class="container rate31" style="height: 420px">
+            <div class="container rate31" style="height: 380px">
                 <% for(let ie=0;ie<product.rate.length;ie++) { %>
                 <div class=" rate3">
-                    <div class="col-xs-1">
+                    <div class="col-xs-2">
                         <%- product.rate[ie].name %>:</div>
 
-                    <div class=" col-xs-7">
+                    <div class=" col-xs-7">+
                         <%- product.rate[ie].msg %>
                     </div>
+                    <br>
+                    <div class="col-xs-2">
+                    </div>
+                    <div class=" col-xs-1 ">
+                        <%- product.rate[ie].sao %> <div class=" glyphicon glyphicon-star">
+                    </div>
+                    </div>
+                    
+                    
+
                 </div>
                 <br>
 
 
                 <% } %>
-            </div> <br>
-            <br>
+            </div>
 
+            <% if(product.rate.length ==5){ %>
+            <h4><a href="/product/getinfor/<%- product._id %>/rate/<%- product.rate[product.rate.length -1].idcomment %>"> Doc tiep</a></h4>
+            <%}%>
+
+            <div>
+            </div>
 
         </div>
         <br><br><br>
-        <div class="container  rate" style="height: 400px">
+        <div class="container  rate" style="height: 500px">
             <h3>Binh luan</h3>
-            <div class="container rate3" style="height: 250px">
+            <div class="container rate3" style="height: 350px">
                 <% for(let ie=0;ie<product.comment.length;ie++) { %>
                 <div class=" rate3">
                     <div class="col-xs-2">
@@ -544,25 +584,30 @@ background-color: red;
                         <button type="submit">Gui</button>
                     </form>
                     <%    } else{%>
-<br><br>
-                      
-                        <div class="col-xs-2">Nguoi ban tra loi:</div>
-                        <div class="col-xs-7"><%- product.comment[ie].answer %></div>
+                    <br><br>
+
+                    <div class="col-xs-2">Nguoi ban tra loi:</div>
+                    <div class="col-xs-7">
+                        <%- product.comment[ie].answer %>
+                    </div>
 
 
 
-<% } %>
+                    <% } %>
                 </div>
                 <br>
 
 
                 <% } %>
-            </div> <br>
-            <br>
+            </div>
+            <% if(product.comment.length ==5){ %>
+            <h4><a href="/product/getinfor/<%- product._id %>/comment/<%- product.comment[product.comment.length -1].idcomment %>"> Doc tiep</a></h4>
+            <%}%>
 
             <div>
                 <form action="" method="POST">
-                    <input type="text" name="comment" id="">
+                    <div class="col-xs-1"></div>
+                    <input type="text" style="width:90vh" name="comment" id="">
 
                     <button type="submit">Gui</button>
                 </form>

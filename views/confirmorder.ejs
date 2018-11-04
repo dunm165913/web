@@ -213,7 +213,7 @@ form{
                 <h5 class="col-xs-1">DH</h5>
             </div>
             <div class="order">
-                <%  for( let i=order.length-1;i>=0;i--) { %>
+                <%  for( let i=0;i<order.length;i++) { %>
 
                
 
@@ -266,8 +266,11 @@ form{
                 <% } %>
 
                 <% } %>
+               
 
-            </div>
+            </div> <% if(order.length ==10){ %>
+                    <h4><a href="/user/neworder/<%- order[9]._id%>">Don tiep theo</a></h4>
+           <%     } %>
             <h5 class="col-xs-4">Ban dang co <%-a1 %> don hang bi huy  </h5>
 <h5 class="col-xs-4">Ban dang co <%-a2 %>  don hang ket thuc</h5>
 <h5 class="col-xs-4">Ban dang co <%-a3 %> don hang cho xet duyet  </h5>

@@ -163,6 +163,12 @@ module.exports = function (app, passport) {
         if (a.img2.length > 0) img.push(a.img2); console.log(img);
         if (a.img3.length > 0) img.push(a.img2); console.log(img);
 
+        p.imgavata=a.img1;
+        p.time_creat = new Date();
+        p.like = [];
+        p.comment = [];
+        p.dislike = [];
+        p.rate = [];
         p.img = img;
         p.id_owner = req.user.id;
         p.brand = xoadau(a.brand);
@@ -210,6 +216,7 @@ module.exports = function (app, passport) {
                     let d = new Date();
                     neworder = new Order();
 
+                    neworder.rate=0;
                     neworder.id_owner = result.id_owner;
                     neworder.cancel = 1;
                     neworder.email_buy = req.user.email;
@@ -417,10 +424,11 @@ module.exports = function (app, passport) {
             if (err) throw err
 
             let c = kiemtra(result); console.log(c);
+            let rs1=processresult(0,result);
             res.render('order', {
                 message: "Danh sach don ",
                 user: req.user,
-                order: result,
+                order: rs1,
                 a1: c[0],
                 a2: c[1],
                 a3: c[2],
@@ -428,7 +436,29 @@ module.exports = function (app, passport) {
                 a5: c[4]
             })
         })
-    })
+    });
+    app.get('/user/order/:id([a-zA-Z0-9]{1,100})', isLoggedIn, (req, res) => {
+        let a = req.user;
+        console.log(a._id);
+        Order.find({
+            id_buy: req.user._id
+        }, (err, result) => {
+            if (err) throw err
+
+            let c = kiemtra(result); console.log(c);
+            let rs1=processresult(req.params.id,result);
+            res.render('order', {
+                message: "Danh sach don ",
+                user: req.user,
+                order: rs1,
+                a1: c[0],
+                a2: c[1],
+                a3: c[2],
+                a4: c[3],
+                a5: c[4]
+            })
+        })
+    });
     app.post('/user/order', isLoggedIn, (req, res) => {
         let a = req.user;
         console.log(a._id);
@@ -459,10 +489,11 @@ module.exports = function (app, passport) {
 
             //console.log("--------"+kiemtra(result));
             let c = kiemtra(result); console.log(c);
+            let res1=processresult(0,result);
             res.render('confirmorder', {
                 message: "Danh sach don hang duoc yeu cau",
                 user: req.user,
-                order: result,
+                order: res1,
                 a1: c[0],
                 a2: c[1],
                 a3: c[2],
@@ -491,6 +522,29 @@ module.exports = function (app, passport) {
             })
         })
     })
+    app.get('/user/neworder/:id([a-zA-Z0-9]{1,100})', isLoggedIn, (req, res) => {
+        let a = req.user;
+        console.log(a._id);
+        Order.find({
+            id_owner: req.user._id
+        }, (err, result) => {
+            if (err) throw err;
+
+            //console.log("--------"+kiemtra(result));
+            let c = kiemtra(result); console.log(c);
+            let res1=processresult(req.params.id,result);
+            res.render('confirmorder', {
+                message: "Danh sach don hang duoc yeu cau",
+                user: req.user,
+                order: res1,
+                a1: c[0],
+                a2: c[1],
+                a3: c[2],
+                a4: c[3],
+                a5: c[4]
+            })
+        })
+    });
     //cap nhat trang thai don hang cua nguoi mua
     app.post('/user/neworder/process/:id([a-zA-Z0-9]{1,100})', isLoggedIn, (req, res) => {
         console.log(req.body.aq + "  ");
@@ -709,10 +763,24 @@ module.exports = function (app, passport) {
             id_owner: req.user._id
         }, (err, result) => {
             if (err) throw err;
+            let rs=processresult(0,result);
             res.render('danhmuc', {
                 message: "Danh muc mat hang cua ban",
                 user: req.user,
-                product: result
+                product: rs
+            });
+        })
+    })
+    app.get('/user/product/:id([a-zA-Z0-9]{1,100})', isLoggedIn, (req, res) => {
+        Product.find({
+            id_owner: req.user._id
+        }, (err, result) => {
+            if (err) throw err;
+            let rs=processresult(req.params.id,result);
+            res.render('danhmuc', {
+                message: "Danh muc mat hang cua ban",
+                user: req.user,
+                product: rs
             });
         })
     })
@@ -742,13 +810,16 @@ module.exports = function (app, passport) {
         }, (err, result) => {
             if (err) throw err;
             if (result) {
+                let imga = result.img;
+                console.log(imga);
+               
                 Product.update({
                     _id: req.params.id
                 }, {
                         name: (req.body.name.length > 0) ? req.body.name : result[0].name,
                         state: (req.body.state > 0) ? req.body.state : result[0].state,
                         price: (req.body.price > 0) ? req.body.price : result[0].price,
-                        img: (req.body.img.length > 0) ? req.body.img : result[0].img,
+                       imgavata:(req.body.img.length > 0) ? req.body.img : result[0].imgavata,
                         described: (req.body.described.length > 0) ? req.body.described : result[0].described,
                     }, (err, result1) => {
                         if (err) throw err;
@@ -870,29 +941,85 @@ module.exports = function (app, passport) {
         console.log(a);
         let b = req.body.comment;
         console.log(b);
-        Product.findById(a,(err,result)=>{
-            if(err) throw err;
-            if(result){
-                let c=result.comment.length.toString();
-             console.log(typeof(c));
+        Product.findById(a, (err, result) => {
+            if (err) throw err;
+            if (result) {
+                let c = result.comment.length.toString();
+                console.log(typeof (c));
                 Product.update({
-                    _id:a
-                },{
-                    $push:{comment:{name:req.user.name,msg:b,answer:"",idcomment:c}}
-                },(err,ok)=>{
-                    if(err) throw err;
-                    let c="/product/getinfor/";
-                    c=c+a;
-                    res.redirect(c);
-                });
+                    _id: a
+                }, {
+                        $push: { comment: { name: req.user.name, msg: b, answer: "", idcomment: c } }
+                    }, (err, ok) => {
+                        if (err) throw err;
+                        let c = "/product/getinfor/";
+                        c = c + a;
+                        res.redirect(c);
+                    });
             }
         })
 
     })
+    app.get('/user/rateproduct/:id([0-9a-zA-Z]{1,100})',isLoggedIn,(req,res)=>{
+       Order.find({
+           _id:req.params.id,
+           id_buy:req.user._id,
+           rate:0
+       },(err,result)=>{
+           if(err) throw err;
+           if(result.length==0){
+               res.redirect('/user/order');
+           }if(result.length>0){
+           Product.findById(result[0].id_product,(err,ok)=>{
+               if(err) throw err;
+               if(ok){
+                   res.render('rateproduct',{
+                       user:req.user,
+                       id:ok.name
+                   })
+               }
+           })
+        }
+       })
+    })
+    app.post('/user/rateproduct/:id([0-9a-zA-Z]{1,100})',isLoggedIn,(req,res)=>{
+        console.log(req.body);
+        Order.find({
+            _id:req.params.id,
+            id_buy:req.user._id,
+            rate:0
+        },(err,result)=>{
+            if(err) throw err;
+            if(result.length>0){
+                Product.findById(result[0].id_product,(err,product)=>{
+                    if( err) throw err;
+                    let c = product.rate.length.toString();
+                    Product.update({
+                        _id:product._id
+                    },{
 
+                        $push:{rate:{name:req.user.name,msg:req.body.danhgia,sao:req.body.sao,idrate:c}}
+                    },(err,ok)=>{
+                        if(err) throw err;
 
+                    })
+                });
+                Order.update({
+                    _id:req.params.id
+                },{
+                    rate:2
+                },(err,ok2)=>{
+                    if(err) throw err;
 
-
+                });
+                let c="/user/order";
+                res.redirect(c);
+            }
+            else{
+                res.redirect('/user/order');
+            }
+        })
+    })
 
 }
 function isLoggedIn(req, res, next) {
@@ -943,4 +1070,37 @@ function xoadau(str) {
 
 
     return str;
+
+}
+function processresult(id, souce) {
+
+
+    if (id != 0) {
+        let as = [];
+        console.log(">0")
+        for (let i = 0; i < souce.length; i++) {
+            console.log(id + "   " + souce[i]._id);
+            if (id == souce[i]._id) {
+                console.log("ok");
+                for (let j = i + 1; j < souce.length; j++) {
+
+                    if (j > i + 10) break;
+                    as.push(souce[j]);
+                } return as;
+
+            }
+        }
+
+    }
+    if (id == 0) {
+        let ab = [];
+        console.log("0")
+        for (let i = 0; i < souce.length; i++) {
+
+            if (i > 10) break;
+            ab.push(souce[i]);
+        }
+        console.log(ab);
+        return ab;
+    }
 }

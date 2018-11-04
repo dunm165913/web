@@ -44,6 +44,9 @@ var orderSchema = new mongoose.Schema({
     },
     cancel:{
         type:Number
+    },
+    rate:{
+        type:Number
     }
 });
 module.exports = mongoose.model('orders', orderSchema);

@@ -216,7 +216,7 @@ form{
 
 
 
-                <% for( let i=order.length-1;i>=0;i--) { %>
+                <% for( let i=0;i<order.length;i++) { %>
                 <div class="container">
                     <h5 class="col-xs-2">
                         <%- order[i]._id %>
@@ -237,22 +237,28 @@ form{
                         <%- order[i].price %>
                     </h5>
                     <h5 class="col-xs-1">
-                        <% if(order[i].state.length ==9) {%>
-                        <a href="/user/order/cancel/<%- order[i]._id %>"> Huy</a>
-                        <% } else { 
-                                            if(order[i].cancel==2) {%> ban huy,KET
-                        THUC
-                        <% } %>
-                        <%   if(order[i].cancel==3) {%> n.ban huy,KET THUC
-                        <% } %>
-                        <% } %>
+                    <% if(order[i].cancel==1 && order[i].rate==0){ %>
+                        
+                        <%if(order[i].state.length==8){%>
+                          <h5><a href="/user/rateproduct/<%- order[i]._id%>">danh gia</a></h5>  
+                        <%}%>
+                        <%}%>
+                    <% if(order[i].cancel==1 && order[i].state.length==9){%>
+                        <h5><a href="/user/order/cancel/<%-order[i]._id%>">Huy DH</a></h5>
+                        <%}%>
+                        <% if(order[i].cancel==2) {%>
+                            <h5>Ban huy,KT</h5><%}%>
                     </h5>
-                    <br><br>
+                    <br><br> 
+                  
                 </div>
-                <% } %>
+                  <% } %>
 
-                <% } %>
+               <% } %>
             </div>
+           <% if(order.length ==10){ %>
+                <h4><a href="/user/order/<%- order[9]._id%>">Don tiep theo</a></h4>
+       <%     } %>
             <h5 class="col-xs-4">Ban dang co
                 <%-a1 %> don hang bi huy </h5>
             <h5 class="col-xs-4">Ban dang co
@@ -269,49 +275,52 @@ form{
 
     </div>
     <style>
-            .button_page {
-                background: #a1f750f3;
-                height: 330px; margin-top: 30px;
-            }
-        
-            .b {
-                margin-top: 20px;
-        
-            }
-        
-            p {
-                font-size: 130%;
-            }
-        </style>
-        
-        <div class="button_page">
-            <div class="col-xs-1"></div>
-            <div class="col-xs-3 b">
-                <h4>Gioi thieu ve Bkstore</h4>
-                <p>Day la du an duoc phat trien tren BTL mon Thiet ke va lap trinh web.Trang web mo phonng
-                    mot trang thuong mai dien tu voi cac chuc nang chinh va chua duoc hoan chinh, moi ddong gop va y kien de
-                    xay dung
-                    trang web tot hon, vui long gui vao email : <a href="">dunguyen20091998@gmail.com</a>
-                </p>
-            </div>
-            <div class="col-xs-1"></div>
-            <div class="col-xs-1 b">
-                <h4>Cac dich vu giao hang</h4>
-                <img src="http://static.insidev2.ghn.vn/9d146c1c0cd90296cecc32948d24731ebca3b737/assets/images/GHN_Logo.png"
-                    alt="" height="60px"><br><br>
-                <img src="http://thanhnien.vnpost.vn/static/img/vnpost.png" alt="" height="60px"><br><br><br>
-                <img src="https://giaohangtietkiem.vn/wp-content/uploads/2015/10/logo.png" height="60px" alt="">
-            </div>
-            <div class="col-xs-1"></div>
-            <div class="col-xs-1 b">
-                <h4>Phuong thuc thanh toan</h4>
-                <img src="https://i2.wp.com/scentfie.com/wp-content/uploads/2017/11/Cash-On-Delivery-Logo.jpg?resize=366%2C144"
-                    alt="" height="60px"><br><br>" <br><br>
-            </div>
-            <div class="col-xs-1"></div>
-            <div class="col-xs-1 b"><a href="">Bkstore.herokuapp.com</a></div>
-        
+        .button_page {
+            background: #a1f750f3;
+            height: 330px;
+            margin-top: 30px;
+        }
+
+        .b {
+            margin-top: 20px;
+
+        }
+
+        p {
+            font-size: 130%;
+        }
+    </style>
+    
+
+    <div class="button_page">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-3 b">
+            <h4>Gioi thieu ve Bkstore</h4>
+            <p>Day la du an duoc phat trien tren BTL mon Thiet ke va lap trinh web.Trang web mo phonng
+                mot trang thuong mai dien tu voi cac chuc nang chinh va chua duoc hoan chinh, moi ddong gop va y kien
+                de
+                xay dung
+                trang web tot hon, vui long gui vao email : <a href="">dunguyen20091998@gmail.com</a>
+            </p>
         </div>
+        <div class="col-xs-1"></div>
+        <div class="col-xs-1 b">
+            <h4>Cac dich vu giao hang</h4>
+            <img src="http://static.insidev2.ghn.vn/9d146c1c0cd90296cecc32948d24731ebca3b737/assets/images/GHN_Logo.png"
+                alt="" height="60px"><br><br>
+            <img src="http://thanhnien.vnpost.vn/static/img/vnpost.png" alt="" height="60px"><br><br><br>
+            <img src="https://giaohangtietkiem.vn/wp-content/uploads/2015/10/logo.png" height="60px" alt="">
+        </div>
+        <div class="col-xs-1"></div>
+        <div class="col-xs-1 b">
+            <h4>Phuong thuc thanh toan</h4>
+            <img src="https://i2.wp.com/scentfie.com/wp-content/uploads/2017/11/Cash-On-Delivery-Logo.jpg?resize=366%2C144"
+                alt="" height="60px"><br><br>" <br><br>
+        </div>
+        <div class="col-xs-1"></div>
+        <div class="col-xs-1 b"><a href="">Bkstore.herokuapp.com</a></div>
+
+    </div>
 
 </body>
 
