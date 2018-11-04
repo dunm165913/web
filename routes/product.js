@@ -41,7 +41,7 @@ function processresult(id, souce) {
         console.log("0")
         for (let i = 0; i < souce.length; i++) {
 
-            if (i > 20) break;
+            if (i >= 20) break;
             ab.push(souce[i]);
         }
         console.log(ab);
@@ -454,7 +454,7 @@ router.route('/getinfor/:id([a-zA-Z0-9]{1,100})/comment/:idcomment([0-9]{1,10000
             // if (ac.length == 0) {
             //     res.redirect(url);
             // }
-            // else 
+            // else
             {
 
                 for (let i = 0; i < result.rate.length; i++) {
@@ -748,7 +748,7 @@ router.route('/store/:id([a-zA-Z0-9]{1,100})/:ie([0-9a-zA-Z]{1,100})').get((req,
     },(err,result)=>{
         if(err) throw err;
         let url="/product/store/"+req.params.id+"/";
-   
+
         let rs=processresult(req.params.ie,result);
 
         res.render('store',{
