@@ -1,4 +1,4 @@
-8b531687f291d54961d08edd0a6344574818c1c6const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 var bcrypt = require('bcrypt-nodejs');
 const mongoose = require('mongoose');
 var User = require('../models/user');
