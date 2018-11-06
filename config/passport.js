@@ -66,7 +66,7 @@ module.exports = function (passport) {
                             newUser.pass = newUser.generateHash(pass);
                             newUser.save(function(err){
                                 if(err) throw err;
-                                sendMail(req.body.email,WELLCOME,"Wellcome to bkstorevn.herokuapp.com.Please login to use my services. Thank you. ")
+                                sendMail(req.body.email,"WELLCOME","Wellcome to bkstorevn.herokuapp.com.Please login to use my services. Thank you. ")
                                 return done(null,newUser);
                             });
                         }
