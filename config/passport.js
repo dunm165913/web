@@ -1,6 +1,15 @@
 var bcrypt = require('bcrypt-nodejs');
 var LocalStrategy = require('passport-local').Strategy;
 var User = require('../models/user');
+var nodemailer=require('nodemailer');
+
+let tranposter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'dunguyen20091998@gmail.com',
+        pass: '22091998'
+    }
+});
 
 
 function sendMail(email, subject, msg) {
@@ -66,7 +75,7 @@ module.exports = function (passport) {
                             newUser.pass = newUser.generateHash(pass);
                             newUser.save(function(err){
                                 if(err) throw err;
-                                sendMail(req.body.email,WELLCOME,"Wellcome to bkstorevn.herokuapp.com.Please login to use my services. Thank you. ")
+                                sendMail(req.body.email,"WELLCOME","Wellcome to bkstorevn.herokuapp.com.Please login to use my services. Thank you. ")
                                 return done(null,newUser);
                             });
                         }
