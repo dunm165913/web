@@ -83,7 +83,7 @@ background-color: red;
     margin-top: 15vh;
     width: 600px
 }
-#name,#price,#img,#brand,#categories{
+#name,#price,#img,#imgs1,#brand,#categories,#img2,#img3{
    height: 30px;
    margin-top:5px;
    margin-left:10%;
@@ -322,12 +322,11 @@ height: 250px;
                     <br>
                     <a href="/product/laptop/brand/asus" style="margin-left: 30px">Asus</a></div>
 
-                    <div class="col-xs-4" style="margin-top:50px">
-                            <img src="http://logok.org/wp-content/uploads/2014/06/Acer-logo-880x633.png"
-                                height="50px" alt="">
+                <div class="col-xs-4" style="margin-top:50px">
+                    <img src="http://logok.org/wp-content/uploads/2014/06/Acer-logo-880x633.png" height="50px" alt="">
 
-                            <br>
-                            <a href="/product/laptop/brand/xiaomi" style="margin-left: 16px">Acer</a></div>
+                    <br>
+                    <a href="/product/laptop/brand/xiaomi" style="margin-left: 16px">Acer</a></div>
 
 
 
@@ -340,25 +339,29 @@ height: 250px;
             <div class="col-xs-8  hidden ew ab" onmouseleave="f()" id="test4">
 
                 <div>
-                        <br><br>
-                        <h4 style="margin-left: 40%">Phu kien</h4>
-                        <div class="col-xs-4" style="margin-top:50px">
-                            <img src="https://cdn.pixabay.com/photo/2014/04/03/10/06/headphones-309805_960_720.png" height="50px" alt="">
-                            <br>
-                            <a href="/product/other">Tai nghe</a></div>
-                        <div class="col-xs-4" style="margin-top:50px">
-                            <img src="https://metrophone.vn/wp-content/uploads/2017/09/Cu-sac-dien-thoai-2A-Bagi-Samsung-IPhone-Nokia-05.jpg" height="50px" alt="">
-                            <br>
-                            <a href="/product/other">Sac</a></div>
-                        <div class="col-xs-4" style="margin-top:50px">
-                            <img src="https://stcv4.hnammobile.com/uploads/products/colors/0/op-lung-world-cup-2018-2634307449-jpg.jpg" height="50px" alt="">
-                            <br>
-                            <a href="/product/other">Oplung</a></div>
+                    <br><br>
+                    <h4 style="margin-left: 40%">Phu kien</h4>
+                    <div class="col-xs-4" style="margin-top:50px">
+                        <img src="https://cdn.pixabay.com/photo/2014/04/03/10/06/headphones-309805_960_720.png" height="50px"
+                            alt="">
+                        <br>
+                        <a href="/product/other">Tai nghe</a></div>
+                    <div class="col-xs-4" style="margin-top:50px">
+                        <img src="https://metrophone.vn/wp-content/uploads/2017/09/Cu-sac-dien-thoai-2A-Bagi-Samsung-IPhone-Nokia-05.jpg"
+                            height="50px" alt="">
+                        <br>
+                        <a href="/product/other">Sac</a></div>
+                    <div class="col-xs-4" style="margin-top:50px">
+                        <img src="https://stcv4.hnammobile.com/uploads/products/colors/0/op-lung-world-cup-2018-2634307449-jpg.jpg"
+                            height="50px" alt="">
+                        <br>
+                        <a href="/product/other">Oplung</a></div>
 
-                        <div class="col-xs-4" style="margin-top:50px">
-                                <img src="https://www.skymartbw.com/wp-content/uploads/2010/04/others-logo.png" height="50px" alt="">
-                                <br>
-                                <a href="/product/ohter" style="margin-left: 16px">All</a></div>
+                    <div class="col-xs-4" style="margin-top:50px">
+                        <img src="https://www.skymartbw.com/wp-content/uploads/2010/04/others-logo.png" height="50px"
+                            alt="">
+                        <br>
+                        <a href="/product/ohter" style="margin-left: 16px">All</a></div>
                 </div>
 
             </div>
@@ -395,31 +398,65 @@ height: 250px;
             <form method="POST" id="formSignUp">
                 <h1>Dang san pham</h1>
                 <label for=""> Ten sap pham</label>
-                <input type="text" name="name" placeholder="   Ten sp" id="name" required><br>
+                <input type="text" name="name" placeholder="   Ten sp" id="name" ><br>
                 <label for=""> Price</label>
-                <input type="number" name="price" placeholder="   price" id="price" required><br>
+                <input type="text" name="price" placeholder="   price" id="price" ><br>
                 <label for=""> So luong</label>
-                <input type="number" name="state" placeholder="   so luong" id="img" required><br>
+                <input type="number" name="state" placeholder="   so luong" id="img"><br>
 
-
-                <label for=""> Img1</label>
-                <input type="text" name="img1" placeholder="   url img1" id="img" required><br>
+ <label for=""> Img avata</label>
+                <input type="text" name="img1" id="img" placeholder="URL img">
+<div>
                 <label for=""> Img2</label>
-                <input type="text" name="img2" placeholder="   url img2" id="img"> <br>
+                <input type="file" onchange="previewFile()"><br>
+                <img src="" id="img1" class="hidden" height="200" alt="Image preview...">
+                <input style="margin-left: 225px" type="text" id="imgs1" name="img2" value="">
+</div>
+                <script>
+
+                    function previewFile() {
+
+
+
+                        var preview = document.querySelector('#img1'); //selects the query named img
+
+
+                        var file = document.querySelector('input[type=file]').files[0]; //sames as here
+                        var reader = new FileReader();
+
+                        reader.onloadend = function () {
+                            preview.src = reader.result;
+                            $('#imgs1').val(preview.src);
+                        }
+
+                        if (file) {
+                            reader.readAsDataURL(file); //reads the data as a URL
+                        } else {
+                            preview.src = "";
+                        }
+                        $('#img1').removeClass('hidden');
+                    }
+
+                </script>
+                <br><br>
+
+
+               
                 <label for=""> Img3</label>
-                <input type="text" name="img3" placeholder="   url img3" id="img"><br>
+                <input type="text" name="img3" id="img3" placeholder="URL img">
+                <br><br>
                 <label for=""> Brand</label>
-                <input type="text" name="brand" placeholder="   brand" id="brand" required><br>
+                <input type="text" name="brand" placeholder="   brand" id="brand" ><br>
                 <label for=""> Category</label>
                 <!-- <input type="text" name="categories" placeholder="   categories" id="categories" required><br> -->
-                <select name="categories" required id="categories">
-                        <option value="phone">Dien thoai</option>
-                        <option value="tablet"> May tinh bang</option>
-                        <option value="laptop"> Laptop</option>
-                        <option value="other"> Phu kien</option>
+                <select name="categories"  id="categories">
+                    <option value="phone">Dien thoai</option>
+                    <option value="tablet"> May tinh bang</option>
+                    <option value="laptop"> Laptop</option>
+                    <option value="other"> Phu kien</option>
 
-                    </select>
-                    <br>
+                </select>
+                <br>
                 <label for=""> Described</label>
                 <textarea name="described" id="described"></textarea><br>
                 <button type="submit"> Dang San pham</button>
@@ -432,49 +469,51 @@ height: 250px;
 
     </script>
     <style>
-            .button_page {
-                background: #a1f750f3;
-                height: 330px; margin-top: 30px;
-            }
+        .button_page {
+            background: #a1f750f3;
+            height: 330px;
+            margin-top: 30px;
+        }
 
-            .b {
-                margin-top: 20px;
+        .b {
+            margin-top: 20px;
 
-            }
+        }
 
-            p {
-                font-size: 130%;
-            }
-        </style>
+        p {
+            font-size: 130%;
+        }
+    </style>
 
-        <div class="button_page">
-            <div class="col-xs-1"></div>
-            <div class="col-xs-3 b">
-                <h4>Gioi thieu ve Bkstore</h4>
-                <p>Day la du an duoc phat trien tren BTL mon Thiet ke va lap trinh web.Trang web mo phonng
-                    mot trang thuong mai dien tu voi cac chuc nang chinh va chua duoc hoan chinh, moi ddong gop va y kien de
-                    xay dung
-                    trang web tot hon, vui long gui vao email : <a href="">dunguyen20091998@gmail.com</a>
-                </p>
-            </div>
-            <div class="col-xs-1"></div>
-            <div class="col-xs-1 b">
-                <h4>Cac dich vu giao hang</h4>
-                <img src="http://static.insidev2.ghn.vn/9d146c1c0cd90296cecc32948d24731ebca3b737/assets/images/GHN_Logo.png"
-                    alt="" height="60px"><br><br>
-                <img src="http://thanhnien.vnpost.vn/static/img/vnpost.png" alt="" height="60px"><br><br><br>
-                <img src="https://giaohangtietkiem.vn/wp-content/uploads/2015/10/logo.png" height="60px" alt="">
-            </div>
-            <div class="col-xs-1"></div>
-            <div class="col-xs-1 b">
-                <h4>Phuong thuc thanh toan</h4>
-                <img src="https://i2.wp.com/scentfie.com/wp-content/uploads/2017/11/Cash-On-Delivery-Logo.jpg?resize=366%2C144"
-                    alt="" height="60px"><br><br>" <br><br>
-            </div>
-            <div class="col-xs-1"></div>
-            <div class="col-xs-1 b"><a href="">Bkstore.herokuapp.com</a></div>
-
+    <div class="button_page">
+        <div class="col-xs-1"></div>
+        <div class="col-xs-3 b">
+            <h4>Gioi thieu ve Bkstore</h4>
+            <p>Day la du an duoc phat trien tren BTL mon Thiet ke va lap trinh web.Trang web mo phonng
+                mot trang thuong mai dien tu voi cac chuc nang chinh va chua duoc hoan chinh, moi ddong gop va y kien
+                de
+                xay dung
+                trang web tot hon, vui long gui vao email : <a href="">dunguyen20091998@gmail.com</a>
+            </p>
         </div>
+        <div class="col-xs-1"></div>
+        <div class="col-xs-1 b">
+            <h4>Cac dich vu giao hang</h4>
+            <img src="http://static.insidev2.ghn.vn/9d146c1c0cd90296cecc32948d24731ebca3b737/assets/images/GHN_Logo.png"
+                alt="" height="60px"><br><br>
+            <img src="http://thanhnien.vnpost.vn/static/img/vnpost.png" alt="" height="60px"><br><br><br>
+            <img src="https://giaohangtietkiem.vn/wp-content/uploads/2015/10/logo.png" height="60px" alt="">
+        </div>
+        <div class="col-xs-1"></div>
+        <div class="col-xs-1 b">
+            <h4>Phuong thuc thanh toan</h4>
+            <img src="https://i2.wp.com/scentfie.com/wp-content/uploads/2017/11/Cash-On-Delivery-Logo.jpg?resize=366%2C144"
+                alt="" height="60px"><br><br>" <br><br>
+        </div>
+        <div class="col-xs-1"></div>
+        <div class="col-xs-1 b"><a href="">Bkstore.herokuapp.com</a></div>
+
+    </div>
 </body>
 
 </html>

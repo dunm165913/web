@@ -187,7 +187,43 @@ console.log(`<%- user.avatar %>`)
 
                     <div>
                             <h4 class="col-xs-3">Anh dai dien:</h4>
-                            <input type="text" class=" col-xs-5" style="margin-top: 14px" name="avata" value="" placeholder=<%- user.avata %> >
+
+                            <input type="file" value="" onchange="previewFile()"><br>
+                            <img src="" id="img1"  class="hidden" height="200" alt="Image preview...">
+                            <input type="text" class="hidden"name="avata" id="avata" value="">
+            
+                            <script>
+                           
+                                function previewFile() {
+                                
+                                   let w;
+            
+                                     var preview = document.querySelector('#img1'); //selects the query named img
+                             
+                               
+                                    var file = document.querySelector('input[type=file]').files[0]; //sames as here
+                                    var reader = new FileReader();
+            
+                                    reader.onloadend = function () {
+                                        preview.src = reader.result;
+      $('#avata').val(preview.src);
+                                       console.log(preview.src+"DSFsd") ;
+                                       console.log("----------------------"+$('o').name)
+                                    }
+            
+                                    if (file) {
+                                        reader.readAsDataURL(file); //reads the data as a URL// 
+                                     
+                                    } else {
+                                        preview.src = "";
+                                    }
+ 
+                                    $('#img1').removeClass('hidden');
+                            
+                                    
+                                }
+            
+                       </script>
                         </div>
                         <br><br><br>
                         <div>

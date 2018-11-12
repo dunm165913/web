@@ -19,7 +19,7 @@ mongoose.connect(config.db,{
 app.set('view engine','ejs');
 
 require('./config/passport')(passport);
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit:'5mb'}));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(cookieParser());
 app.use(morgan('dev'));

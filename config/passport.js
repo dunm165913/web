@@ -1,7 +1,7 @@
 var bcrypt = require('bcrypt-nodejs');
 var LocalStrategy = require('passport-local').Strategy;
 var User = require('../models/user');
-var nodemailer=require('nodemailer');
+var nodemailer = require('nodemailer');
 
 let tranposter = nodemailer.createTransport({
     service: 'gmail',
@@ -45,45 +45,46 @@ module.exports = function (passport) {
         passwordField: 'pass',
         passReqToCallback: true
     },
-        function (req,phone, pass, done) {
+        function (req, phone, pass, done) {
             console.log(req.body);
-           
+
             User.findOne({ phone: phone }, function (err, user) {
                 if (err) { return done(err); }
                 if (user) {
                     console.log("SDT taken")
-                    return done(null, false,req.flash('rehisterMessage','Email is alreay taken...') );
-                } 
-                if(!user){
+                    return done(null, false, req.flash('rehisterMessage', 'Email is alreay taken...'));
+                }
+                if (!user) {
                     User.findOne({
-                        email:req.body.email
-                    },(err,result)=>{
-                        if(err) throw err;
-                        if( result) {
+                        email: req.body.email
+                    }, (err, result) => {
+                        if (err) throw err;
+                        if (result) {
                             console.log("Email taken")
-                            return done(null,false,req.flash('rehisterMessage','Email is alreay taken...'))
+                            return done(null, false, req.flash('rehisterMessage', 'Email is alreay taken...'))
 
                         }
-                        if(! result){
+                        if (!result) {
                             var newUser = new User();
-                            newUser.time= new Date();
-                            newUser.avata="https://images-na.ssl-images-amazon.com/images/I/51%2BJZUHDnPL.jpg",
-
-                            newUser.name=req.body.name;
-                            newUser.email=req.body.email;
+                            newUser.time = new Date();
+                            newUser.avata = "https://images-na.ssl-images-amazon.com/images/I/51%2BJZUHDnPL.jpg",
+                                newUser.auth = 0;
+                            newUser.name = req.body.name;
+                            newUser.email = req.body.email;
                             newUser.phone = phone;
                             newUser.pass = newUser.generateHash(pass);
-                            newUser.save(function(err){
-                                if(err) throw err;
-                                sendMail(req.body.email,"WELLCOME","Wellcome to bkstorevn.herokuapp.com.Please login to use my services. Thank you. ")
-                                return done(null,newUser);
+                            newUser.save(function (err) {
+                                if (err) throw err;
+                                let message = "Wellcome to bkstorevn.herokuapp.com.Please auth by click " + "bkstorevn.herokuapp.com/auth/" + newUser.phone + "/" + newUser._id + " to use my service. Thanh you";
+                                sendMail(req.body.email, "WELLCOME", message);
+                                return done(null, newUser);
                             });
                         }
                     })
                 }
-                   
-                   
-                
+
+
+
             });
         }));
     passport.use('login', new LocalStrategy({

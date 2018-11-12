@@ -21,14 +21,15 @@ function processresult(id, souce) {
 
     if (id != 0) {
         let as = [];
-        console.log(">0")
-        for (let i = 0; i < souce.length; i++) {
+        console.log(">0");
+        let c=souce.length-1-20;
+        for (let i = souce.length-1;i>=0; i--) {
             console.log(id + "   " + souce[i]._id);
             if (id == souce[i]._id) {
                 console.log("ok");
-                for (let j = i + 1; j < souce.length; j++) {
+                for (let j = i - 1; j>=0; j--) {
 
-                    if (j > i + 20) break;
+                    if (j <c+1) break;
                     as.push(souce[j]);
                 } return as;
 
@@ -39,13 +40,16 @@ function processresult(id, souce) {
     if (id == 0) {
         let ab = [];
         console.log("0")
-        for (let i = 0; i < souce.length; i++) {
+    
+            let c=souce.length-1-20;
+            for (let i =souce.length-1; i >=0; i--) {
 
-            if (i >= 20) break;
-            ab.push(souce[i]);
-        }
-        console.log(ab);
-        return ab;
+                if (i <c+1) break;
+                ab.push(souce[i]);
+            }
+            console.log(ab);
+            return ab;
+        
     }
 }
 
@@ -365,7 +369,7 @@ router.route('/getinfor/:id([a-zA-Z0-9]{1,100})').get((req, res) => {
         if (err) throw err;
         else {
             let ac = [], ad = [];
-            console.log(result.rate.length + "  ok  " + result.comment.length)
+          
             for (let i = 0; i < result.comment.length; i++) {
                 if (i == 5) break;
                 ac.push(result.comment[i]);
@@ -437,12 +441,13 @@ router.route('/getinfor/:id([a-zA-Z0-9]{1,100})').get((req, res) => {
 router.route('/getinfor/:id([a-zA-Z0-9]{1,100})/comment/:idcomment([0-9]{1,10000})').get((req, res) => {
     let a = req.params;
 
-    console.log(typeof (a.idcomment) + a.idcomment);
+   
     Product.findById(a.id, (err, result) => {
         if (err) throw err;
         else {
             let ac = [], ad = [];
             let z = parseInt(a.id);
+            
             console.log(result.rate.length + "  ok  " + result.comment.length)
             for (let i = z; i < result.comment.length; i++) {
                 if (i > z + 5) break;

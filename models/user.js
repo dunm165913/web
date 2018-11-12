@@ -40,6 +40,9 @@ var userSchema = mongoose.Schema({
     },
     dislike:{
         type:Array
+    },
+    auth:{
+        type:Number
     }
 
 });

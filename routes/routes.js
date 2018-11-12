@@ -17,9 +17,15 @@ let tranposter = nodemailer.createTransport({
 });
 module.exports = function (app, passport) {
     app.get('/', (req, res) => {
-        res.render('home', {
-            user: req.user
-        });
+        Product.find((err, result) => {
+            if (err) throw err;
+            let rs=processresult(0,result);
+            res.render('home', {
+                user: req.user,
+                product:rs
+            });
+        })
+
     })
         ;
     app.get('/login', function (req, res) {
@@ -147,38 +153,54 @@ module.exports = function (app, passport) {
 
     //upload product
     app.get('/user/uploadproduct', isLoggedIn, (req, res) => {
-        res.render('uploadproduct', {
-            user: req.user
-        });
+        if (req.user.auth == 1) {
+            res.render('uploadproduct', {
+                user: req.user
+            });
+        }
+        else {
+            res.render('message', {
+                user: req.user,
+                message: "Ban can xac thuc de thuc hien chuc nang nay!"
+            })
+        }
     });
     app.post('/user/uploadproduct', isLoggedIn, (req, res) => {
-        let a = req.body;
-        //console.log(a);
-        let p = new Product();
-        p.name = a.name;
-        p.price = a.price;
-        p.state = a.state;
-        let img = [];
-        img.push(a.img1); console.log(img);
-        if (a.img2.length > 0) img.push(a.img2); console.log(img);
-        if (a.img3.length > 0) img.push(a.img2); console.log(img);
+        if (req.user.auth == 1) {
+            let a = req.body;
+            console.log(a);
+            let p = new Product();
+            p.name = a.name;
+            p.price = parseInt(a.price.split(',').join(''));
+            p.state = a.state;
+            let img = [];
+            img.push(a.img1); console.log(img);
+            if (a.img2.length > 0) img.push(a.img2); console.log(img);
+            if (a.img3.length > 0) img.push(a.img2); console.log(img);
 
-        p.imgavata=a.img1;
-        p.time_creat = new Date();
-        p.like = [];
-        p.comment = [];
-        p.dislike = [];
-        p.rate = [];
-        p.img = img;
-        p.id_owner = req.user.id;
-        p.brand = xoadau(a.brand);
-        p.categories = a.categories;
-        p.described = a.described;
-        console.log(p);
-        p.save((err) => {
-            if (err) throw err;
-            if (!err) res.redirect('/');
-        })
+            p.imgavata = a.img1;
+            p.time_creat = new Date();
+            p.like = [];
+            p.comment = [];
+            p.dislike = [];
+            p.rate = [];
+            p.img = img;
+            p.id_owner = req.user.id;
+            p.brand = xoadau(a.brand);
+            p.categories = a.categories;
+            p.described = a.described;
+            console.log(p);
+            p.save((err) => {
+                if (err) throw err;
+                if (!err) res.redirect('/');
+            })
+        }
+        else {
+            res.render('message', {
+                user: req.user,
+                message: "Ban can xac thuc de thuc hien chuc nang nay!"
+            })
+        }
 
     });
     //form buy
@@ -198,85 +220,89 @@ module.exports = function (app, passport) {
 
     });
     app.post('/user/buy/:id([a-zA-Z0-9]{1,100})', isLoggedIn, (req, res) => {
-        let c = req.params;
-        let a = req.body;
-
-
-        Product.findById(c.id, (err, result) => {
-            if (err) throw err;
+        if (req.user.auth == 1) {
+            let c = req.params;
             let a = req.body;
-            let b = req.user;
-            console.log(req.user._id + result.id_owner);
-            if (req.user._id == result.id_owner) {
-                let c = '/product/getinfor/' + result._id;
-                res.redirect(c);
-            }
-            else {
-                if (result.state >= req.body.soluong) {
-                    let d = new Date();
-                    neworder = new Order();
-
-                    neworder.rate=0;
-                    neworder.id_owner = result.id_owner;
-                    neworder.cancel = 1;
-                    neworder.email_buy = req.user.email;
-                    neworder.id_buy = b._id;
-                    neworder.note = a.note;
-                    neworder.id_product = result._id;
-                    neworder.time = d;
-                    neworder.soluong = a.soluong;
-                    neworder.address = a.address;
-                    neworder.name_product = result.name;
-                    neworder.price = result.price * req.body.soluong;
-                    neworder.vanchuyen = a.gh;
-                    neworder.thanhtoan = a.TT;
-                    neworder.tel = b.tel;
-                    neworder.state = "XET DUYET";
-                    console.log(neworder);
-                    let p = result.state;
-                    p = p - req.body.soluong;
-                    console.log(p + " " + result.id);
-
-                    Product.update({
-                        _id: result.id
-                    }, {
-                            state: p
-                        }, (err, result1) => {
-                            if (err) throw err;
-                            else console.log("ok");
-                        });
 
 
-                    neworder.save((err) => {
-                        if (err) throw err;
-                        else console.log("Sucess")
-                    });
-                    let c = "You have ordered the order :" + neworder._id + " .The order is 'XET DUYET' buy seller. We will email to you anther state of order. Thank you";
-                    let mailOptions = {
-                        from: 'dunguyen20091998@gmail.com',
-                        to: b.email,
-                        subject: 'ORDER',
-                        text: c
-                    };
-                    tranposter.sendMail(mailOptions, (err, result) => {
-                        if (err) throw err;
-                        else {
-                            res.render('message', {
-                                user: req.user,
-                                message: "Ban da dat hang thanh cong"
-                            })
-                            console.log("sent email " + result.response);
-                        }
-                    });
+            Product.findById(c.id, (err, result) => {
+                if (err) throw err;
+                let a = req.body;
+                let b = req.user;
+                console.log(req.user._id + result.id_owner);
+                if (req.user._id == result.id_owner) {
+                    let c = '/product/getinfor/' + result._id;
+                    res.redirect(c);
                 }
-                else res.render('message', {
-                    user: req.user,
-                    message: "thong tin ban nhap co sai xot, vui long kiem tra lai"
-                })
-            }
+                else {
+                    if (result.state >= req.body.soluong) {
+                        let d = new Date();
+                        neworder = new Order();
 
+                        neworder.rate = 0;
+                        neworder.id_owner = result.id_owner;
+                        neworder.cancel = 1;
+                        neworder.email_buy = req.user.email;
+                        neworder.id_buy = b._id;
+                        neworder.note = a.note;
+                        neworder.id_product = result._id;
+                        neworder.time = d;
+                        neworder.soluong = a.soluong;
+                        neworder.address = a.address;
+                        neworder.name_product = result.name;
+                        neworder.price = result.price * req.body.soluong;
+                        neworder.vanchuyen = a.gh;
+                        neworder.thanhtoan = a.TT;
+                        neworder.tel = b.tel;
+                        neworder.state = "XET DUYET";
+                        console.log(neworder);
+                        let p = result.state;
+                        p = p - req.body.soluong;
+                        console.log(p + " " + result.id);
 
-        });
+                        Product.update({
+                            _id: result.id
+                        }, {
+                                state: p
+                            }, (err, result1) => {
+                                if (err) throw err;
+                                else console.log("ok");
+                            });
+
+                        neworder.save((err) => {
+                            if (err) throw err;
+                            else console.log("Sucess")
+                        });
+                        let c = "You have ordered the order :" + neworder._id + " .The order is 'XET DUYET' buy seller. We will email to you anther state of order. Thank you";
+                        let mailOptions = {
+                            from: 'dunguyen20091998@gmail.com',
+                            to: b.email,
+                            subject: 'ORDER',
+                            text: c
+                        };
+                        tranposter.sendMail(mailOptions, (err, result) => {
+                            if (err) throw err;
+                            else {
+                                res.render('message', {
+                                    user: req.user,
+                                    message: "Ban da dat hang thanh cong"
+                                })
+                                console.log("sent email " + result.response);
+                            }
+                        });
+                    }
+                    else res.render('message', {
+                        user: req.user,
+                        message: "thong tin ban nhap co sai xot, vui long kiem tra lai"
+                    })
+                }
+            });
+        } else {
+            res.render('message', {
+                user: req.user,
+                message: "Ban can xac thuc de thuc hien chuc nang nay!"
+            })
+        }
 
 
     });
@@ -293,7 +319,7 @@ module.exports = function (app, passport) {
     app.post('/user/update', isLoggedIn, (req, res) => {
 
         let a = req.body;
-        console.log(a.name.length + "  " + req.user.phone);
+        console.log(a.name.length + "  " + req.user.phone + a.avata);
         if (req.body.phone.length == 10) {
             User.findOne({
                 phone: req.body.phone
@@ -424,7 +450,7 @@ module.exports = function (app, passport) {
             if (err) throw err
 
             let c = kiemtra(result); console.log(c);
-            let rs1=processresult(0,result);
+            let rs1 = processresult(0, result);
             res.render('order', {
                 message: "Danh sach don ",
                 user: req.user,
@@ -446,7 +472,7 @@ module.exports = function (app, passport) {
             if (err) throw err
 
             let c = kiemtra(result); console.log(c);
-            let rs1=processresult(req.params.id,result);
+            let rs1 = processresult(req.params.id, result);
             res.render('order', {
                 message: "Danh sach don ",
                 user: req.user,
@@ -489,7 +515,7 @@ module.exports = function (app, passport) {
 
             //console.log("--------"+kiemtra(result));
             let c = kiemtra(result); console.log(c);
-            let res1=processresult(0,result);
+            let res1 = processresult(0, result);
             res.render('confirmorder', {
                 message: "Danh sach don hang duoc yeu cau",
                 user: req.user,
@@ -532,7 +558,7 @@ module.exports = function (app, passport) {
 
             //console.log("--------"+kiemtra(result));
             let c = kiemtra(result); console.log(c);
-            let res1=processresult(req.params.id,result);
+            let res1 = processresult(req.params.id, result);
             res.render('confirmorder', {
                 message: "Danh sach don hang duoc yeu cau",
                 user: req.user,
@@ -763,7 +789,7 @@ module.exports = function (app, passport) {
             id_owner: req.user._id
         }, (err, result) => {
             if (err) throw err;
-            let rs=processresult(0,result);
+            let rs = processresult(0, result);
             res.render('danhmuc', {
                 message: "Danh muc mat hang cua ban",
                 user: req.user,
@@ -776,7 +802,7 @@ module.exports = function (app, passport) {
             id_owner: req.user._id
         }, (err, result) => {
             if (err) throw err;
-            let rs=processresult(req.params.id,result);
+            let rs = processresult(req.params.id, result);
             res.render('danhmuc', {
                 message: "Danh muc mat hang cua ban",
                 user: req.user,
@@ -811,7 +837,7 @@ module.exports = function (app, passport) {
             if (err) throw err;
             if (result) {
                 let imga = result.img;
-                console.log(imga);
+                // console.log(imga);
 
                 Product.update({
                     _id: req.params.id
@@ -819,7 +845,7 @@ module.exports = function (app, passport) {
                         name: (req.body.name.length > 0) ? req.body.name : result[0].name,
                         state: (req.body.state > 0) ? req.body.state : result[0].state,
                         price: (req.body.price > 0) ? req.body.price : result[0].price,
-                       imgavata:(req.body.img.length > 0) ? req.body.img : result[0].imgavata,
+                        imgavata: (req.body.img.length > 0) ? req.body.img : result[0].imgavata,
                         described: (req.body.described.length > 0) ? req.body.described : result[0].described,
                     }, (err, result1) => {
                         if (err) throw err;
@@ -960,63 +986,90 @@ module.exports = function (app, passport) {
         })
 
     })
-    app.get('/user/rateproduct/:id([0-9a-zA-Z]{1,100})',isLoggedIn,(req,res)=>{
-       Order.find({
-           _id:req.params.id,
-           id_buy:req.user._id,
-           rate:0
-       },(err,result)=>{
-           if(err) throw err;
-           if(result.length==0){
-               res.redirect('/user/order');
-           }if(result.length>0){
-           Product.findById(result[0].id_product,(err,ok)=>{
-               if(err) throw err;
-               if(ok){
-                   res.render('rateproduct',{
-                       user:req.user,
-                       id:ok.name
-                   })
-               }
-           })
-        }
-       })
+    app.get('/user/rateproduct/:id([0-9a-zA-Z]{1,100})', isLoggedIn, (req, res) => {
+        Order.find({
+            _id: req.params.id,
+            id_buy: req.user._id,
+            rate: 0
+        }, (err, result) => {
+            if (err) throw err;
+            if (result.length == 0) {
+                res.redirect('/user/order');
+            } if (result.length > 0) {
+                Product.findById(result[0].id_product, (err, ok) => {
+                    if (err) throw err;
+                    if (ok) {
+                        res.render('rateproduct', {
+                            user: req.user,
+                            id: ok.name
+                        })
+                    }
+                })
+            }
+        })
     })
-    app.post('/user/rateproduct/:id([0-9a-zA-Z]{1,100})',isLoggedIn,(req,res)=>{
+    app.post('/user/rateproduct/:id([0-9a-zA-Z]{1,100})', isLoggedIn, (req, res) => {
         console.log(req.body);
         Order.find({
-            _id:req.params.id,
-            id_buy:req.user._id,
-            rate:0
-        },(err,result)=>{
-            if(err) throw err;
-            if(result.length>0){
-                Product.findById(result[0].id_product,(err,product)=>{
-                    if( err) throw err;
+            _id: req.params.id,
+            id_buy: req.user._id,
+            rate: 0
+        }, (err, result) => {
+            if (err) throw err;
+            if (result.length > 0) {
+                Product.findById(result[0].id_product, (err, product) => {
+                    if (err) throw err;
                     let c = product.rate.length.toString();
                     Product.update({
-                        _id:product._id
-                    },{
+                        _id: product._id
+                    }, {
 
-                        $push:{rate:{name:req.user.name,msg:req.body.danhgia,sao:req.body.sao,idrate:c}}
-                    },(err,ok)=>{
-                        if(err) throw err;
+                            $push: { rate: { name: req.user.name, msg: req.body.danhgia, sao: req.body.sao, idrate: c } }
+                        }, (err, ok) => {
+                            if (err) throw err;
 
-                    })
+                        })
                 });
                 Order.update({
-                    _id:req.params.id
-                },{
-                    rate:2
-                },(err,ok2)=>{
-                    if(err) throw err;
+                    _id: req.params.id
+                }, {
+                        rate: 2
+                    }, (err, ok2) => {
+                        if (err) throw err;
 
-                });
-                let c="/user/order";
+                    });
+                let c = "/user/order";
                 res.redirect(c);
             }
-            else{
+            else {
                 res.redirect('/user/order');
+            }
+        })
+    })
+    app.get('/auth/:phone([0-9a-zA-z@]{1,100})/:id([a-zA-Z0-9]{1,1000})', (req, res) => {
+        console.log(req.params + req.params.phone + req.params.id);
+        User.findById(req.params.id, (err, result) => {
+            if (err) throw err;
+            if (result) {
+                User.update({
+                    phone: req.params.phone,
+                    _id: req.params.id
+
+                }, {
+                        auth: 1
+                    }, (err, ok) => {
+                        if (err) throw err
+                        res.render('message', {
+                            user: req.user,
+                            message: "ban da xac thuc thanh cong"
+                        })
+                    })
+            }
+            else {
+                res.render('message', {
+                    user: req.user,
+                    message: "oh! co loi voi xac thuc cua ban"
+                })
             }
         })
     })
@@ -1077,14 +1130,15 @@ function processresult(id, souce) {
 
     if (id != 0) {
         let as = [];
-        console.log(">0")
-        for (let i = 0; i < souce.length; i++) {
+        console.log(">0");
+        let c = souce.length - 1 - 12;
+        for (let i = souce.length - 1; i >= 0; i--) {
             console.log(id + "   " + souce[i]._id);
             if (id == souce[i]._id) {
                 console.log("ok");
-                for (let j = i + 1; j < souce.length; j++) {
+                for (let j = i - 1; j >= 0; j--) {
 
-                    if (j > i + 10) break;
+                    if (j < c + 1) break;
                     as.push(souce[j]);
                 } return as;
 
@@ -1095,12 +1149,15 @@ function processresult(id, souce) {
     if (id == 0) {
         let ab = [];
         console.log("0")
-        for (let i = 0; i < souce.length; i++) {
 
-            if (i >= 10) break;
+        let c = souce.length - 1 - 12;
+        for (let i = souce.length - 1; i >= 0; i--) {
+
+            if (i < c + 1) break;
             ab.push(souce[i]);
         }
         console.log(ab);
         return ab;
+
     }
 }
