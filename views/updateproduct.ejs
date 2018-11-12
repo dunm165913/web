@@ -215,7 +215,7 @@ form{
 
                     <br>
                     <div>
-                        <h4 class="col-xs-3">Anh dai dien:</h4>
+                        <h4 class="col-xs-3">Anh dai dien(<50kb):</h4>
                         <input type="file" value="" onchange="previewFile()"><br>
                         <img src="" id="img1" class="hidden" height="200" alt="Image preview...">
                         <input type="text" name="img" id="avata" value="">
@@ -235,11 +235,11 @@ form{
                                 reader.onloadend = function () {
                                     preview.src = reader.result;
                                     $('#avata').val(preview.src);
-                                   
+
                                 }
 
                                 if (file) {
-                                    reader.readAsDataURL(file); //reads the data as a URL// 
+                                    reader.readAsDataURL(file); //reads the data as a URL//
 
                                 } else {
                                     preview.src = "";

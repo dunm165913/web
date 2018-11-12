@@ -92,39 +92,7 @@ background-color: red;
 
         </style>
 
-    <script>
-        $(document).ready(() => {
-            $('#user').click(() => {
-                $('#u_login').show(500);
-                $('#user').removeAttr('placeholder')
-            });
-            $('#pass').click(() => {
-                $('#p_login').show(500);
-                $('#pass').removeAttr('placeholder')
-            });
-        });
-        function check() {
-            let user = document.formlogin.user.value;
-            let pass = document.formlogin.pass.value;
-            let userreglux = "([0-9]{10})";
-            let passreglux = "([a-zA-Z0-9]{6.100})";
-            if (user.length != 10) {
-                window.alert("ban sai sdt");
-            }
-            if (pass.length < 6) {
-                window.alert("mat khau khoong hop le");
-            }
-            else {
-                if (passreglux.match(user)) {
-                    // window.alert("mat khau khong hop le");
-                }
-                else {
-                    window.alert("mat khau ko hop le");
-                }
-            }
 
-        }
-    </script>
 
 
 
