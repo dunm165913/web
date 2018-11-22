@@ -22,5 +22,5 @@
     "passport-local": "^1.0.0"
   },
   "author": "sikandar",
-  "license": "ISC"
+  "license": "MIT"
 }
